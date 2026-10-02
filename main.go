@@ -1,24 +1,22 @@
 package main
 
 import (
+	"context"
 	"log"
-	"net/http"
+	"os"
+	"os/signal"
 
-	"github.com/gin-gonic/gin"
+	"github.com/Ficserbiyy/weather-api/internal/application"
 )
 
 func main() {
-	// Gin router with default middleware
-	r := gin.Default()
+	app := application.NewApp(application.LoadConfig())
 
-	r.GET("/ping", func(c *gin.Context) {
-		c.JSON(http.StatusOK, gin.H{
-			"message": "pong",
-		})
-	})
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	cancel()
 
 	log.Println("Server listening on 0.0.0.0:8080")
-	if err := r.Run(); err != nil {
-		log.Fatalf("unable to listen to server: %v", err)
+	if err := app.Start(ctx); err != nil {
+		log.Fatal(err)
 	}
 }
