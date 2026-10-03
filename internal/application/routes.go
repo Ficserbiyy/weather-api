@@ -24,8 +24,9 @@ func (a *App) loadRoutes() {
 func (a *App) loadWeatherRoutes(router *gin.RouterGroup) {
 	weatherHandler := &handler.WeatherHandler{
 		Repo: &weather.RedisRepo{
-			Client: a.redis,
+			Client: a.rdb,
 		},
+		APIKey: a.cfg.APIKey,
 	}
 
 	router.GET("/", weatherHandler.Homepage())

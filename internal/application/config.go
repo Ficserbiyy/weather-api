@@ -1,6 +1,7 @@
 package application
 
 import (
+	"log"
 	"os"
 	"strconv"
 )
@@ -8,12 +9,23 @@ import (
 type config struct {
 	RedisAddress string
 	ServerPort   uint16
+	APIKey       string
 }
 
+const (
+	envAPIKey = "WEATHER_API_KEY"
+)
+
 func LoadConfig() config {
+	apiKey := os.Getenv(envAPIKey)
+	if apiKey == "" {
+		log.Fatalf("environment variable is not set: %s", envAPIKey)
+	}
+
 	cfg := config{
 		RedisAddress: "localhost:6379",
 		ServerPort:   8080,
+		APIKey:       apiKey,
 	}
 
 	if redisAddr, ok := os.LookupEnv("REDIS_ADDR"); ok {

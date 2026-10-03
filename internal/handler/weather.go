@@ -8,7 +8,8 @@ import (
 )
 
 type WeatherHandler struct {
-	Repo *weather.RedisRepo
+	Repo   *weather.RedisRepo
+	APIKey string
 }
 
 func (h *WeatherHandler) Homepage() gin.HandlerFunc {

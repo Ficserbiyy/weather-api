@@ -13,13 +13,13 @@ import (
 
 type App struct {
 	router *gin.Engine
-	redis  *redis.Client
+	rdb    *redis.Client
 	cfg    config
 }
 
 func NewApp(config config) *App {
 	app := &App{
-		redis: redis.NewClient(&redis.Options{
+		rdb: redis.NewClient(&redis.Options{
 			Addr: config.RedisAddress,
 		}),
 		cfg: config,
@@ -30,13 +30,13 @@ func NewApp(config config) *App {
 }
 
 func (a *App) Start(ctx context.Context) error {
-	err := a.redis.Ping(ctx).Err()
+	err := a.rdb.Ping(ctx).Err()
 	if err != nil {
 		return fmt.Errorf("unable to ping redis: %w", err)
 	}
 
 	defer func() {
-		if err := a.redis.Close(); err != nil {
+		if err := a.rdb.Close(); err != nil {
 			log.Println("unable to close redis: ", err)
 		}
 	}()
